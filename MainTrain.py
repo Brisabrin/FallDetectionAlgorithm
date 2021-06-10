@@ -82,7 +82,7 @@ def rise(X_train, y_train, X_test, y_test):
     # univariate time series classification
     # train on extracted features
     for i in range(4):
-        model = RandomIntervalSpectralForest(n_estimators=10, verbose=1)
+        model = RandomIntervalSpectralForest(n_estimators=10)
         model.fit(X_train[[i]], y_train)
         print("Feature index : {} ".format(i))
         print(model.score(X_test[[i]], y_test))
