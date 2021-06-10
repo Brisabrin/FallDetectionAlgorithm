@@ -208,21 +208,21 @@ arr = {"optKfold": [0, 0]}
 tscv = TimeSeriesSplit(n_splits=3)
 
 ma = - 1
-# for train, test in tscv.split(X):
-#     print("%s %s" % (train, test))
-#     X_train, X_test = X.loc[train], X.loc[test]
-#     y_train, y_test = Y.loc[train], Y.loc[test]
+for train, test in tscv.split(X):
+    print("%s %s" % (train, test))
+    X_train, X_test = X.loc[train], X.loc[test]
+    y_train, y_test = Y.loc[train], Y.loc[test]
 
-#     score, clf = TimeSeriesF(X_train, y_train, X_test, y_test)
-#     if score > ma:
-#         ma = score
-#         arr["optKfold"][0] = train
-#         arr["optKfold"][1] = test
-#         f = 'modelKfold.sav'
-#         pickle.dump(clf, open(f, 'wb'))
+    score, clf = TimeSeriesF(X_train, y_train, X_test, y_test)
+    if score > ma:
+        ma = score
+        arr["optKfold"][0] = train
+        arr["optKfold"][1] = test
+        f = 'modelKfold.sav'
+        pickle.dump(clf, open(f, 'wb'))
 
 
-X_train, X_test, y_train, y_test = train_test_split(X,  Y, random_state=42)
+# X_train, X_test, y_train, y_test = train_test_split(X,  Y, random_state=42)
 
 
 # K_nn(X_train, X_test, y_train, y_test)
