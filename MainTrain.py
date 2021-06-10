@@ -13,6 +13,7 @@ from sktime.classification.interval_based import RandomIntervalSpectralForest
 from sktime.datasets import load_basic_motions
 from sktime.transformations.panel.compose import ColumnConcatenator
 from sktime.transformations.panel.padder import PaddingTransformer
+from sktime.transformations.panel.reduce import Tabularizer
 from pickle5 import pickle
 import joblib
 import struct
@@ -46,10 +47,12 @@ feature columns :
 - YM
 - ZM 
 
-
 """
-
 arr = ["XAD", "YAD", "ZAD", "XR", "YR", "ZR", "XM", "YM", "ZM"]
+
+# actual features selected : can discard the y-axis data because sensor was placed in line with centre of mass
+# ["XAD", "ZAD", "XR, "ZR"]
+
 da = defaultdict(list)
 de = defaultdict(list)
 # print(df.loc[8])
@@ -72,6 +75,17 @@ def TimeSeriesF(X_train, y_train, X_test, y_test):
 
     clf.fit(X_train, y_train)
     return clf.score(X_test, y_test), clf
+
+
+def rise(X_train, y_train, X_test, y_test):
+
+    # univariate time series classification
+    # train on extracted features
+    for i in range(4):
+        model = RandomIntervalSpectralForest(n_estimators=10, verbose=1)
+        model.fit(X_train[[i]], y_train)
+        print("Feature index : {} ".format(i))
+        print(model.score(X_test[[i]], y_test))
 
 
 # def K_nn(X_train, y_train, X_test, y_test):
@@ -208,6 +222,8 @@ arr = {"optKfold": [0, 0]}
 tscv = TimeSeriesSplit(n_splits=3)
 
 ma = - 1
+
+K fold cross validation
 for train, test in tscv.split(X):
     print("%s %s" % (train, test))
     X_train, X_test = X.loc[train], X.loc[test]
@@ -222,10 +238,13 @@ for train, test in tscv.split(X):
         pickle.dump(clf, open(f, 'wb'))
 
 
-# X_train, X_test, y_train, y_test = train_test_split(X,  Y, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X,  Y, random_state=42)
+
+
+print(type(X_train))
+
+# RISE
+rise(X_train, y_train, X_test, y_test)
 
 
 # K_nn(X_train, X_test, y_train, y_test)
-
-
-print("hello")
